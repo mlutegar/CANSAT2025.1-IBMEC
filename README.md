@@ -165,13 +165,8 @@ Em nossos testes realizados em 02/04/2025, implementamos o protocolo MQTT utiliz
    
    Por fim, integramos todos os componentes: o sensor ultrassônico coletando dados, o ESP32 processando e enviando essas informações via MQTT para o broker. Esta integração completa demonstra o conceito base que será utilizado em nosso projeto CANSAT com tecnologia LORA.
 
-   ![Integração Completa](imgs/full_integration.jpg)
+   https://www.youtube.com/shorts/gCAAbGTRs9k
    *Sistema completo em funcionamento: Sensor Ultrassônico + ESP32 + MQTT*
-   
-   <video width="640" height="360" controls>
-     <source src="videos/full_integration_demo.mp4" type="video/mp4">
-     Seu navegador não suporta o elemento de vídeo.
-   </video>
    
    ```cpp
     #include <WiFi.h>
