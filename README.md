@@ -62,29 +62,20 @@ Em nossos testes realizados em 02/04/2025, implementamos o protocolo MQTT utiliz
    
    Inicialmente realizamos a integração do sensor ultrassônico HC-SR04 com o ESP32 para validar a leitura de dados do sensor. Este teste foi fundamental para garantir que os dados coletados estivessem corretos antes de implementar a comunicação MQTT.
 
-   ![ESP32 com Sensor Ultrassônico](imgs/testesiniciaiscomsensordeaproximidade1.jpg)
-   *ESP32 conectado ao sensor ultrassônico HC-SR04*
-
    [Código do teste com sensor ultrassônico](/scripts/esp32_ultrasonic.ino)
 
 2. **Teste MQTT Local**
    
    Após validar o funcionamento do sensor, configuramos um broker MQTT local para testar a comunicação. Utilizamos o Mosquitto como broker MQTT e verificamos a transmissão e recebimento de mensagens entre o ESP32 e o computador local.
-
-   ![Teste MQTT Local](imgs/mqtt_local_test.jpg)
-   *Terminal mostrando mensagens sendo transmitidas via MQTT localmente*
    
    [Código do teste MQTT local](/scripts/mqtt_local_test.ino)
 
 3. **Teste MQTT com Broker Público**
    
    Em seguida, realizamos testes de conectividade com o broker público test.mosquitto.org. Durante esta etapa, encontramos um obstáculo: a rede Wi-Fi do IBMEC (onde os testes foram realizados) provavelmente bloqueia as conexões MQTT. Para contornar esse problema, conectamos o ESP32 à rede de dados móveis de um celular, obtendo sucesso na comunicação.
-
-   ![Teste MQTT com Broker Público](imgs/mqtt_public_broker.jpg)
-   *ESP32 conectado ao broker público test.mosquitto.org via rede de dados móveis*
    
    <video width="640" height="360" controls>
-     <source src="videos/mqtt_public_test.mp4" type="video/mp4">
+     <source src="https://www.youtube.com/shorts/gCAAbGTRs9k" type="video/mp4">
      Seu navegador não suporta o elemento de vídeo.
    </video>
    
