@@ -62,7 +62,7 @@ Em nossos testes realizados em 02/04/2025, implementamos o protocolo MQTT utiliz
    
    Inicialmente realizamos a integração do sensor ultrassônico HC-SR04 com o ESP32 para validar a leitura de dados do sensor. Este teste foi fundamental para garantir que os dados coletados estivessem corretos antes de implementar a comunicação MQTT.
 
-   ![ESP32 com Sensor Ultrassônico](imgs/esp32_ultrasonic.jpg)
+   ![ESP32 com Sensor Ultrassônico](imgs/testesiniciaiscomsensordeaproximidade1.jpg)
    *ESP32 conectado ao sensor ultrassônico HC-SR04*
 
    [Código do teste com sensor ultrassônico](/scripts/esp32_ultrasonic.ino)
