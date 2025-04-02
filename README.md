@@ -58,7 +58,7 @@ Após pesquisa e análise, selecionamos o material PLA.
 ### Testes de Comunicação (27/03/2025)
 
 #### Receptor LORA
-![Receptor LORA]("imgs/lorax receptor.jpg")
+![Receptor LORA](imgs/loraxreceptor.jpg)
 *Receptor LORA em funcionamento durante os testes*
 
 #### Transmissor LORA
