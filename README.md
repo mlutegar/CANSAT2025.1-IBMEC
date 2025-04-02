@@ -62,7 +62,7 @@ Após pesquisa e análise, selecionamos o material PLA.
 *Receptor LORA em funcionamento durante os testes*
 
 #### Transmissor LORA
-![Transmissor LORA](caminho/para/foto_transmissor.jpg)
+![Transmissor LORA](imgs/loraxtransmitor.jpg)
 *Transmissor LORA em funcionamento durante os testes*
 
 ### Vídeo de Demonstração
