@@ -9,6 +9,9 @@ Este projeto consiste na implementação de um sistema de comunicação sem fio 
 ## Tecnologias Utilizadas
 - Arduino
 - Módulos LORA OSOYOO UART
+- ESP32
+- Mosquitto MQTT Broker
+- Sensor Ultrassônico HC-SR04
 - Software Arduino IDE
 - Impressão 3D para o case dos dispositivos
 
@@ -50,6 +53,57 @@ Este código utiliza a biblioteca SoftwareSerial para criar uma porta serial vir
 1. Dados recebidos pela porta serial do computador, que são enviados para o módulo LORA
 2. Dados recebidos pelo módulo LORA, que são enviados para a porta serial do computador
 
+### Implementação do MQTT com ESP32
+Em nossos testes realizados em 02/04/2025, implementamos o protocolo MQTT utilizando o ESP32 como dispositivo base. O MQTT (Message Queuing Telemetry Transport) será utilizado em conjunto com a tecnologia LORA para fornecer uma comunicação robusta e eficiente para nosso projeto CANSAT.
+
+#### Etapas de Testes com MQTT
+
+1. **Teste com ESP32 e Sensor Ultrassônico**
+   
+   Inicialmente realizamos a integração do sensor ultrassônico HC-SR04 com o ESP32 para validar a leitura de dados do sensor. Este teste foi fundamental para garantir que os dados coletados estivessem corretos antes de implementar a comunicação MQTT.
+
+   ![ESP32 com Sensor Ultrassônico](imgs/esp32_ultrasonic.jpg)
+   *ESP32 conectado ao sensor ultrassônico HC-SR04*
+
+   [Código do teste com sensor ultrassônico](/scripts/esp32_ultrasonic.ino)
+
+2. **Teste MQTT Local**
+   
+   Após validar o funcionamento do sensor, configuramos um broker MQTT local para testar a comunicação. Utilizamos o Mosquitto como broker MQTT e verificamos a transmissão e recebimento de mensagens entre o ESP32 e o computador local.
+
+   ![Teste MQTT Local](imgs/mqtt_local_test.jpg)
+   *Terminal mostrando mensagens sendo transmitidas via MQTT localmente*
+   
+   [Código do teste MQTT local](/scripts/mqtt_local_test.ino)
+
+3. **Teste MQTT com Broker Público**
+   
+   Em seguida, realizamos testes de conectividade com o broker público test.mosquitto.org. Durante esta etapa, encontramos um obstáculo: a rede Wi-Fi do IBMEC (onde os testes foram realizados) provavelmente bloqueia as conexões MQTT. Para contornar esse problema, conectamos o ESP32 à rede de dados móveis de um celular, obtendo sucesso na comunicação.
+
+   ![Teste MQTT com Broker Público](imgs/mqtt_public_broker.jpg)
+   *ESP32 conectado ao broker público test.mosquitto.org via rede de dados móveis*
+   
+   <video width="640" height="360" controls>
+     <source src="videos/mqtt_public_test.mp4" type="video/mp4">
+     Seu navegador não suporta o elemento de vídeo.
+   </video>
+   
+   [Código do teste com broker público](/scripts/mqtt_public_broker.ino)
+
+4. **Integração Completa: Sensor Ultrassônico + ESP32 + MQTT**
+   
+   Por fim, integramos todos os componentes: o sensor ultrassônico coletando dados, o ESP32 processando e enviando essas informações via MQTT para o broker. Esta integração completa demonstra o conceito base que será utilizado em nosso projeto CANSAT com tecnologia LORA.
+
+   ![Integração Completa](imgs/full_integration.jpg)
+   *Sistema completo em funcionamento: Sensor Ultrassônico + ESP32 + MQTT*
+   
+   <video width="640" height="360" controls>
+     <source src="videos/full_integration_demo.mp4" type="video/mp4">
+     Seu navegador não suporta o elemento de vídeo.
+   </video>
+   
+   [Código da integração completa](/scripts/ultrasonic_mqtt_integration.ino)
+
 ### Materiais para Impressão 3D
 Após pesquisa e análise, selecionamos o material PLA.
 
@@ -86,7 +140,9 @@ Após pesquisa e análise, selecionamos o material PLA.
 | 27/03/2025 | Testes de comunicação LORA | ✅ Concluído |
 | 27/03/2025 | Seleção de material para impressão 3D | ✅ Concluído |
 | 27/03/2025 | Documentação fotográfica e em vídeo | ✅ Concluído |
+| 02/04/2025 | Testes com Mosquitto MQTT e ESP32 | ✅ Concluído |
 | Próxima aula | Início da impressão 3D do case | 🔄 Pendente |
+| Próxima aula | Integração MQTT com LORA | 🔄 Pendente |
 
 ## Equipe
 - André C. Coelho
