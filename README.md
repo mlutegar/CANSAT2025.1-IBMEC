@@ -79,7 +79,87 @@ Em nossos testes realizados em 02/04/2025, implementamos o protocolo MQTT utiliz
      Seu navegador não suporta o elemento de vídeo.
    </video>
    
-   [Código do teste com broker público](/scripts/mqtt_public_broker.ino)
+   ```cpp
+    #include <WiFi.h>
+    #include <PubSubClient.h>
+    
+    const char* ssid = "IPhone de Michel";  // Substitua pelo nome da sua rede Wi-Fi
+    const char* password = "iphone-michel";  // Substitua pela senha do Wi-Fi
+    
+    // Configuração MQTT
+    const char* mqtt_server = "test.mosquitto.org";  // Servidor MQTT público
+    const int mqtt_port = 1883;  // Porta padrão MQTT
+    const char* mqtt_topic = "iotbr/esp32";  // Tópico MQTT onde vamos publicar
+    
+    WiFiClient espClient;
+    PubSubClient client(espClient);
+    
+    void setup_wifi() {
+      delay(10);
+      Serial.println("Conectando ao WiFi...");
+      WiFi.begin(ssid, password);
+    
+      while (WiFi.status() != WL_CONNECTED) {
+        delay(1000);
+        Serial.print(".");
+      }
+    
+      Serial.println("\nWiFi conectado!");
+      Serial.print("Endereço IP: ");
+      Serial.println(WiFi.localIP());
+    }
+    
+    void reconnect() {
+      while (!client.connected()) {
+        Serial.print("Conectando ao MQTT...");
+        if (client.connect("ESP32Client1")) {
+          Serial.println("Conectado!");
+        } else {
+          Serial.print("Falha, rc=");
+          Serial.print(client.state());
+          Serial.println(" Tentando novamente em 5 segundos...");
+          delay(5000);
+        }
+      }
+    }
+    
+    void setup() {
+      Serial.begin(115200);
+      setup_wifi();
+      client.setServer(mqtt_server, mqtt_port);
+    }
+    
+    void loop() {
+      // Verificar se o cliente MQTT está conectado
+      if (!client.connected()) {
+        Serial.println("MQTT desconectado! Tentando reconectar...");
+        reconnect();
+      }
+    
+      // Se já estiver conectado, publique a mensagem
+    if (client.connected()) {
+        Serial.println("MQTT já conectado! Publicando mensagem...");
+        
+        int valorSensor = random(20, 40);
+        String mensagem = "Grupo placas policias, numero aleatorio: " + String(valorSensor);
+        
+        Serial.println("Publicando: " + mensagem);
+        
+        if (client.publish(mqtt_topic, mensagem.c_str())) {
+            Serial.println("✅ Publicação bem-sucedida!");
+        } else {
+            Serial.println("❌ Falha ao publicar no MQTT!");
+        }
+    }
+      
+    
+      // Mantém a conexão MQTT ativa
+      client.loop();
+    
+      delay(10000);  // Aguarda 10 segundos antes de enviar a próxima leitura
+    }
+
+   ```
 
 4. **Integração Completa: Sensor Ultrassônico + ESP32 + MQTT**
    
@@ -93,7 +173,111 @@ Em nossos testes realizados em 02/04/2025, implementamos o protocolo MQTT utiliz
      Seu navegador não suporta o elemento de vídeo.
    </video>
    
-   [Código da integração completa](/scripts/ultrasonic_mqtt_integration.ino)
+   ```cpp
+    #include <WiFi.h>
+    #include <PubSubClient.h>
+    
+    const char* ssid = "iPhone do Michel";  // Nome da rede Wi-Fi
+    const char* password = "iphone-michel";  // Senha do Wi-Fi
+    
+    // Configuração do servidor MQTT (substitua pelo IP correto)
+    const char* mqtt_server = "test.mosquitto.org";  // Endereço IP do broker MQTT
+    const int mqtt_port = 1883;  // Porta padrão MQTT
+    const char* mqtt_topic = "iotbr/esp32";  // Tópico MQTT para publicação
+    
+    const int trigPin = 27;    // Pino conectado ao Trigger do sensor
+    const int echoPin = 26; 
+    
+    long duration;            // Variável para armazenar o tempo do pulso (em microssegundos)
+    float distance; 
+    
+    WiFiClient espClient;
+    PubSubClient client(espClient);
+    
+    void setup_wifi() {
+      Serial.println("Conectando ao WiFi...");
+      WiFi.begin(ssid, password);
+    
+      int tentativas = 0;
+      while (WiFi.status() != WL_CONNECTED) {
+        delay(1000);
+        Serial.print(".");
+        tentativas++;
+    
+        if (tentativas > 10) {  // Timeout após 10 tentativas
+          Serial.println("\n⚠️ Falha ao conectar no Wi-Fi! Verifique SSID e senha.");
+          return;
+        }
+      }
+    
+      Serial.println("\n✅ WiFi conectado!");
+      Serial.print("Endereço IP: ");
+      Serial.println(WiFi.localIP());
+    }
+    
+    void reconnect() {
+      while (!client.connected()) {
+        Serial.print("Conectando ao MQTT...");
+        
+        if (client.connect("ESP32Client1")) {
+          Serial.println("✅ Conectado ao MQTT!");
+        } else {
+          Serial.print("❌ Erro ao conectar, código: ");
+          Serial.print(client.state());
+          Serial.println(" Tentando novamente em 5 segundos...");
+          delay(5000);
+        }
+      }
+    }
+    
+    void setup() {
+      Serial.begin(115200);
+      setup_wifi();
+      client.setServer(mqtt_server, mqtt_port);
+    
+        // Configura os pinos
+      pinMode(trigPin, OUTPUT);  // Pino Trigger como saída
+      pinMode(echoPin, INPUT);   // Pino Echo como entrada
+    }
+    
+    void loop() {
+      if (!client.connected()) {
+        Serial.println("MQTT desconectado! Tentando reconectar...");
+        reconnect();
+      }
+    
+      if (client.connected()) {
+        Serial.println("MQTT já conectado! Publicando mensagem...");
+    
+        digitalWrite(trigPin, LOW);
+      delayMicroseconds(2);
+    
+      // Envia um pulso de 10 microssegundos para o Trigger
+      digitalWrite(trigPin, HIGH);
+      delayMicroseconds(10);
+      digitalWrite(trigPin, LOW);
+    
+      // Captura o tempo em que o Echo ficou HIGH
+      duration = pulseIn(echoPin, HIGH);
+    
+      // Calcula a distância (a velocidade do som é ~0.034 cm/us, dividido por 2 por conta da ida e volta)
+      int valorSensor = duration * 0.034 / 2;
+    
+        String mensagem = "Valor medido: " + String(valorSensor) + " cm";
+    
+        Serial.println("Publicando: " + mensagem);
+    
+        if (client.publish(mqtt_topic, mensagem.c_str())) {
+          Serial.println("✅ Publicação bem-sucedida!");
+        } else {
+          Serial.println("❌ Falha ao publicar no MQTT!");
+        }
+      }
+    
+      client.loop();
+      delay(10000);  // Aguarda 10 segundos antes de enviar a próxima leitura
+    }
+   ```
 
 ### Materiais para Impressão 3D
 Após pesquisa e análise, selecionamos o material PLA.
