@@ -128,8 +128,6 @@ Em nossos testes realizados em 02/04/2025, implementamos o protocolo MQTT utiliz
    
    Inicialmente realizamos a integração do sensor ultrassônico HC-SR04 com o ESP32 para validar a leitura de dados do sensor. Este teste foi fundamental para garantir que os dados coletados estivessem corretos antes de implementar a comunicação MQTT.
 
-   [Código do teste com sensor ultrassônico](/scripts/esp32_ultrasonic.ino)
-
 2. **Teste MQTT Local**
    
    Após validar o funcionamento do sensor, configuramos um broker MQTT local para testar a comunicação. Utilizamos o Mosquitto como broker MQTT e verificamos a transmissão e recebimento de mensagens entre o computador local e o dominio público test.mosquitto.org.
@@ -349,11 +347,9 @@ Após pesquisa e análise, selecionamos o material PLA.
 *Transmissor LORA em funcionamento durante os testes*
 
 ### Vídeo de Demonstração
-<video width="640" height="360" controls>
-  <source src="caminho/para/video_demonstracao.mp4" type="video/mp4">
-  Seu navegador não suporta o elemento de vídeo.
-</video>
-*Demonstração do sistema em funcionamento com transmissão de dados em tempo real*
+
+Link01: https://www.youtube.com/shorts/hgWBvwrDPh4
+Link02: https://www.youtube.com/shorts/htwC8H2n7iE
 
 ### Material para Impressão 3D
 ![Material de Impressão 3D](caminho/para/foto_material.jpg)
