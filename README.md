@@ -21,6 +21,8 @@ Este projeto consiste na implementação de um sistema de comunicação sem fio 
 Em nossa implementação, utilizamos módulos LORA OSOYOO UART para estabelecer a comunicação sem fio. Após alguns testes iniciais e ajustes, conseguimos com sucesso realizar a transmissão de dados entre o receptor e o transmissor na aula do dia 27/03/2025.
 
 #### Código de Comunicação
+
+#### Teste de Comunicação com Ações (Botões e LED)
 O código abaixo foi implementado para estabelecer a comunicação entre os dispositivos:
 
 ```cpp
@@ -50,8 +52,72 @@ void loop() {
 ```
 
 Este código utiliza a biblioteca SoftwareSerial para criar uma porta serial virtual, permitindo a comunicação entre o Arduino e o módulo LORA. O programa monitora constantemente duas entradas:
-1. Dados recebidos pela porta serial do computador, que são enviados para o módulo LORA
+
+Após validar a comunicação básica entre os módulos LORA, realizamos um segundo teste utilizando uma abordagem mais próxima da aplicação final. No transmissor, implementamos dois botões: um responsável por enviar o comando "ON" e outro por enviar "OFF". No receptor, um LED indicava visualmente o recebimento desses comandos, acendendo ou apagando conforme o sinal recebido.
+
+Esse teste foi importante para verificar o controle de dispositivos remotos por meio da comunicação LoRa. Abaixo estão os códigos utilizados para o transmissor e o receptor:
+1. Dados transmitidos pela porta serial do computador, que são enviados para o módulo LORA
+```
+#include <SoftwareSerial.h>
+
+#define BTN1  4
+#define BTN2  5  
+
+SoftwareSerial loraSerial(2, 3); // TX, RX
+
+String turnOn = "on";
+String turnOff = "off";
+
+void setup() {
+  pinMode(BTN1, INPUT_PULLUP);
+  pinMode(BTN2, INPUT_PULLUP);
+  Serial.begin(9600);
+  loraSerial.begin(9600);
+}
+
+void loop() {
+  if(digitalRead(BTN1) == 0) {
+    loraSerial.print(turnOn);
+    while(digitalRead(BTN1) == 0);
+    delay(50);
+  }
+
+  if(digitalRead(BTN2) == 0) {
+    loraSerial.print(turnOff);
+    while(digitalRead(BTN2) == 0);
+    delay(50);
+  }
+}
+```
+
 2. Dados recebidos pelo módulo LORA, que são enviados para a porta serial do computador
+```
+#include <SoftwareSerial.h>
+
+#define LED1  4  
+
+SoftwareSerial loraSerial(2, 3); // TX, RX
+
+void setup() {
+  pinMode(LED1, OUTPUT);
+  Serial.begin(9600);
+  loraSerial.begin(9600);  
+}
+
+void loop() { 
+  if(loraSerial.available() > 1){
+    String input = loraSerial.readString();
+    Serial.println(input);  
+    if(input == "on") {
+      digitalWrite(LED1, HIGH);  
+    } 
+    if(input == "off") {
+      digitalWrite(LED1, LOW);
+    }
+  }
+  delay(20);
+}
+```
 
 ### Implementação do MQTT com ESP32
 Em nossos testes realizados em 02/04/2025, implementamos o protocolo MQTT utilizando o ESP32 como dispositivo base. O MQTT (Message Queuing Telemetry Transport) será utilizado em conjunto com a tecnologia LORA para fornecer uma comunicação robusta e eficiente para nosso projeto CANSAT.
@@ -307,7 +373,7 @@ Após pesquisa e análise, selecionamos o material PLA.
 
 | Data | Atividade | Status |
 |------|-----------|--------|
-| 27/03/2025 | Testes de comunicação LORA | ✅ Concluído |
+| 27/03/2025 | Teste de comunicação LORA com ações (botões e LED) | ✅ Concluído |
 | 27/03/2025 | Seleção de material para impressão 3D | ✅ Concluído |
 | 27/03/2025 | Documentação fotográfica e em vídeo | ✅ Concluído |
 | 02/04/2025 | Testes com Mosquitto MQTT e ESP32 | ✅ Concluído |
