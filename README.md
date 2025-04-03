@@ -132,18 +132,11 @@ Em nossos testes realizados em 02/04/2025, implementamos o protocolo MQTT utiliz
 
 2. **Teste MQTT Local**
    
-   Após validar o funcionamento do sensor, configuramos um broker MQTT local para testar a comunicação. Utilizamos o Mosquitto como broker MQTT e verificamos a transmissão e recebimento de mensagens entre o ESP32 e o computador local.
-   
-   [Código do teste MQTT local](/scripts/mqtt_local_test.ino)
+   Após validar o funcionamento do sensor, configuramos um broker MQTT local para testar a comunicação. Utilizamos o Mosquitto como broker MQTT e verificamos a transmissão e recebimento de mensagens entre o computador local e o dominio público test.mosquitto.org.
 
 3. **Teste MQTT com Broker Público**
    
    Em seguida, realizamos testes de conectividade com o broker público test.mosquitto.org. Durante esta etapa, encontramos um obstáculo: a rede Wi-Fi do IBMEC (onde os testes foram realizados) provavelmente bloqueia as conexões MQTT. Para contornar esse problema, conectamos o ESP32 à rede de dados móveis de um celular, obtendo sucesso na comunicação.
-   
-   <video width="640" height="360" controls>
-     <source src="https://www.youtube.com/shorts/gCAAbGTRs9k" type="video/mp4">
-     Seu navegador não suporta o elemento de vídeo.
-   </video>
    
    ```cpp
     #include <WiFi.h>
