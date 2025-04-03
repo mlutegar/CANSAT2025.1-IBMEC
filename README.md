@@ -221,9 +221,6 @@ Em nossos testes realizados em 02/04/2025, implementamos o protocolo MQTT utiliz
 4. **Integração Completa: Sensor Ultrassônico + ESP32 + MQTT**
    
    Por fim, integramos todos os componentes: o sensor ultrassônico coletando dados, o ESP32 processando e enviando essas informações via MQTT para o broker. Esta integração completa demonstra o conceito base que será utilizado em nosso projeto CANSAT com tecnologia LORA.
-
-   https://www.youtube.com/shorts/gCAAbGTRs9k
-   *Sistema completo em funcionamento: Sensor Ultrassônico + ESP32 + MQTT*
    
    ```cpp
     #include <WiFi.h>
@@ -336,7 +333,7 @@ Após pesquisa e análise, selecionamos o material PLA.
 
 ## Fotos e Vídeos do Projeto
 
-### Testes de Comunicação (27/03/2025)
+### Testes de Comunicação LORA (27/03/2025)
 
 #### Receptor LORA
 ![Receptor LORA](imgs/loraxreceptor.jpg)
@@ -346,13 +343,21 @@ Após pesquisa e análise, selecionamos o material PLA.
 ![Transmissor LORA](imgs/loraxtransmitor.jpg)
 *Transmissor LORA em funcionamento durante os testes*
 
-### Vídeo de Demonstração
+#### Vídeo de Demonstração
 
-Link01: https://www.youtube.com/shorts/hgWBvwrDPh4
-Link02: https://www.youtube.com/shorts/htwC8H2n7iE
+https://www.youtube.com/shorts/hgWBvwrDPh4
+  *Sistema completo em funcionamento do LORA 1*
 
+https://www.youtube.com/shorts/htwC8H2n7iE
+  *Sistema completo em funcionamento do LORA 2*
+
+### Testes de Comunicação Mqtt (01/04/2025)
+
+https://www.youtube.com/shorts/gCAAbGTRs9k
+   *Sistema completo em funcionamento: Sensor Ultrassônico + ESP32 + MQTT*
+   
 ### Material para Impressão 3D
-![Material de Impressão 3D](caminho/para/foto_material.jpg)
+![Material de Impressão 3D](imgs/cargaca.jpg)
 
 [Link do .stl](https://www.thingiverse.com/thing:6189990)
 
