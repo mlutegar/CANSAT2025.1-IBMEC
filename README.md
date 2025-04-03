@@ -57,7 +57,7 @@ Após validar a comunicação básica entre os módulos LORA, realizamos um segu
 
 Esse teste foi importante para verificar o controle de dispositivos remotos por meio da comunicação LoRa. Abaixo estão os códigos utilizados para o transmissor e o receptor:
 1. Dados transmitidos pela porta serial do computador, que são enviados para o módulo LORA
-```
+```cpp
 #include <SoftwareSerial.h>
 
 #define BTN1  4
@@ -91,7 +91,7 @@ void loop() {
 ```
 
 2. Dados recebidos pelo módulo LORA, que são enviados para a porta serial do computador
-```
+```cpp
 #include <SoftwareSerial.h>
 
 #define LED1  4  
