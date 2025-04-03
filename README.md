@@ -1,7 +1,7 @@
 # Projeto de Sistema Embarcado - Comunicação LORA (CANSAT 2025)
 
 ## Links
-[Overleaf](https://www.overleaf.com/project/67d9fed686f30143346a00f5)
+[Overleaf](https://www.overleaf.com/project/67d35431212153aa53f4d6de)
 
 ## Descrição do Projeto
 Este projeto consiste na implementação de um sistema de comunicação sem fio utilizando a tecnologia LORA (Long Range), desenvolvido para a disciplina de Projeto de Sistema Embarcado. O objetivo principal é estabelecer uma comunicação eficiente entre um transmissor e um receptor, possibilitando a troca de dados a longa distância com baixo consumo de energia.
