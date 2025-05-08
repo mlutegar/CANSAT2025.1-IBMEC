@@ -1,0 +1,9 @@
+Eu quero fazer testes de comunicação entre dois loras a diferentes distancias. me ajude com sugestões de outros testes além desses que eu pensei.
+os testes que pensei seria:
+1. tempo para chegar de um lora ao outro
+2. perda de pacotes
+2.1. a delay diferentes
+2.2. a tamanhos de arquivos diferentes
+
+analisar payload
+analisar frequencia
