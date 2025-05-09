@@ -15,6 +15,29 @@ int currentRound = 0;
 int currentMessage = 0;
 unsigned long previousMillis = 0;
 
+char* gerarString(int qtd) {
+  // Alocação dinâmica de memória para a string
+  // +1 para o caractere nulo no final da string
+  static char string[100]; // Buffer estático com tamanho máximo de 100
+
+  // Garantir que não exceda o buffer
+  if (qtd > 99) {
+    qtd = 99; // Limita a 99 para deixar espaço para o '\0'
+  }
+  
+  // Preenche a string com caracteres
+  for (int i = 0; i < qtd; i++) {
+    // Gera caracteres aleatórios ou pode personalizar aqui
+    // Usando letras minúsculas como exemplo
+    string[i] = 'a' + (i % 26); // Alternativa: 'a' + random(26);
+  }
+  
+  // Adiciona o caractere nulo ao final da string
+  string[qtd] = '\0';
+  
+  return string;
+}
+
 void setup() {
   Serial.begin(9600);
   radio.begin();
@@ -36,16 +59,19 @@ void loop() {
     
     // Preparar a mensagem
     currentMessage++;
-    String messageContent = "Mensagem #" + String(currentMessage);
-    int messageSize = messageContent.length() + 1; // +1 para o caractere nulo
-    
+	String numeroMensagem = "#" + String(currentMessage);
+	
+	char* outraString = gerarString(1000);
+	  String stringArduino = String(outraString); // Converte char* para String do Arduino
+	  String messageContent = stringArduino;
+	  int messageSize = messageContent.length() + 1;
+	
+	    
 	char message[50];
     messageContent.toCharArray(message, sizeof(message));
 	radio.write(&message, sizeof(message));
 	
-	Serial.print(currentMillis);
-    Serial.print(" - ");
-    Serial.print(messageContent);
+	Serial.print(numeroMensagem);
     Serial.print(" - ");
     Serial.print(messageSize);
     Serial.println(" bytes");
