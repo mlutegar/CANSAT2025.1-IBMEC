@@ -2,41 +2,22 @@
 #include <nRF24L01.h>
 #include <RF24.h>
 
-RF24 radio(9, 8);
-const byte address[6] = "00001";
+RF24 radio(9, 8);  // CE, CSN
+const byte address[6] = "00001";  // Endereço do canal de comunicação
 
-// Define os atrasos para cada rodada em milissegundos
-const unsigned long delays[] = {1, 10, 100, 200, 300, 400, 500, 600, 700, 800};
-const int NUM_ROUNDS = 10;
-const int NUM_MESSAGES = 1000;
+// Estrutura da mensagem
+struct DataPacket {
+  int packetNumber;
+  int messageNumber;
+};
 
-// Variáveis para controlar o estado do programa
-int currentRound = 0;
+// Variáveis para controlar o programa
+int packetNumber = 0;
+int totalMessages = 0;
 int currentMessage = 0;
+bool configReady = false;
 unsigned long previousMillis = 0;
-
-char* gerarString(int qtd) {
-  // Alocação dinâmica de memória para a string
-  // +1 para o caractere nulo no final da string
-  static char string[100]; // Buffer estático com tamanho máximo de 100
-
-  // Garantir que não exceda o buffer
-  if (qtd > 99) {
-    qtd = 99; // Limita a 99 para deixar espaço para o '\0'
-  }
-  
-  // Preenche a string com caracteres
-  for (int i = 0; i < qtd; i++) {
-    // Gera caracteres aleatórios ou pode personalizar aqui
-    // Usando letras minúsculas como exemplo
-    string[i] = 'a' + (i % 26); // Alternativa: 'a' + random(26);
-  }
-  
-  // Adiciona o caractere nulo ao final da string
-  string[qtd] = '\0';
-  
-  return string;
-}
+const unsigned long delayTime = 1;  // Delay de 1ms entre mensagens
 
 void setup() {
   Serial.begin(9600);
@@ -45,55 +26,122 @@ void setup() {
   radio.setPALevel(RF24_PA_MIN);
   radio.stopListening();
   
-  // Inicia a primeira rodada
-  Serial.println("\n--- Iniciando Rodada 1 com delay de " + String(delays[0]) + "ms ---");
-  previousMillis = millis();
+  Serial.println("Transmissor nRF24L01 iniciado!");
+  Serial.println("Aguardando configuração...");
+  
+  getUserConfig();  // Obter configuração inicial do usuário
+}
+
+void getUserConfig() {
+  Serial.println("\n--- CONFIGURAÇÃO DO PACOTE ---");
+  
+  // Solicitar número do pacote
+  Serial.println("Digite o número do pacote:");
+  while (!Serial.available()) {
+    // Aguardar entrada do usuário
+  }
+  packetNumber = Serial.parseInt();
+  Serial.print("Número do pacote configurado: ");
+  Serial.println(packetNumber);
+  Serial.flush();
+  
+  // Limpar buffer
+  while (Serial.available()) {
+    Serial.read();
+  }
+  
+  // Solicitar quantidade de mensagens
+  Serial.println("Digite quantas mensagens terá esse pacote:");
+  while (!Serial.available()) {
+    // Aguardar entrada do usuário
+  }
+  totalMessages = Serial.parseInt();
+  Serial.print("Total de mensagens configurado: ");
+  Serial.println(totalMessages);
+  Serial.flush();
+  
+  // Limpar buffer
+  while (Serial.available()) {
+    Serial.read();
+  }
+  
+  currentMessage = 0;  // Resetar contador de mensagens
+  configReady = true;  // Configuração concluída
+  
+  Serial.println("\n--- INICIANDO TRANSMISSÃO ---");
+  Serial.println("Pacote: " + String(packetNumber) + " | Total de mensagens: " + String(totalMessages));
+  previousMillis = millis();  // Inicializar timer
 }
 
 void loop() {
-	unsigned long currentMillis = millis();
-	
-	// Verifica se é hora de enviar uma nova mensagem
-  if (currentMillis - previousMillis >= delays[currentRound]) {
-    previousMillis = currentMillis;
+  // Verifica se a configuração está pronta
+  if (configReady) {
+    unsigned long currentMillis = millis();
     
-    // Preparar a mensagem
-    currentMessage++;
-	String numeroMensagem = "#" + String(currentMessage);
-	
-	char* outraString = gerarString(1000);
-	  String stringArduino = String(outraString); // Converte char* para String do Arduino
-	  String messageContent = stringArduino;
-	  int messageSize = messageContent.length() + 1;
-	
-	    
-	char message[50];
-    messageContent.toCharArray(message, sizeof(message));
-	radio.write(&message, sizeof(message));
-	
-	Serial.print(numeroMensagem);
-    Serial.print(" - ");
-    Serial.print(messageSize);
-    Serial.println(" bytes");
-	
-	    // Verificar se terminou o número de mensagens para essa rodada
-    if (currentMessage >= NUM_MESSAGES) {
-      currentRound++;
-      currentMessage = 0;
+    // Verifica se é hora de enviar uma nova mensagem
+    if (currentMillis - previousMillis >= delayTime && currentMessage < totalMessages) {
+      previousMillis = currentMillis;
       
-      if (currentRound < NUM_ROUNDS) {
-        // Iniciar próxima rodada
-        Serial.println("\n--- Iniciando Rodada " + String(currentRound + 1) + 
-                     " com delay de " + String(delays[currentRound]) + "ms ---");
-      } else {
-        // Finalizar todas as rodadas
-        Serial.println("\n--- Todas as rodadas foram concluídas ---");
-        Serial.println("Programa finalizado.");
-        while (1) {
-          // Loop infinito para parar a execução
-          delay(1000);
+      // Preparar e enviar a mensagem
+      currentMessage++;
+      
+      DataPacket dataPacket;
+      dataPacket.packetNumber = packetNumber;
+      dataPacket.messageNumber = currentMessage;
+
+      // Obter o tempo em microssegundos
+      unsigned long micro = micros();
+      
+      // Criar mensagem com o tempo em microssegundos incluído
+      String messageContent = String(micro) + "," + String(dataPacket.packetNumber) + "," + String(dataPacket.messageNumber);
+      
+      char message[50];
+      messageContent.toCharArray(message, sizeof(message));
+      bool success = radio.write(&message, sizeof(message));
+      
+      // Exibir informações sobre a mensagem enviada
+      Serial.print("Enviado - Pacote: ");
+      Serial.print(dataPacket.packetNumber);
+      Serial.print(" | Mensagem: ");
+      Serial.print(dataPacket.messageNumber);
+      Serial.print(" | Tempo: ");
+      Serial.print(micro);
+      Serial.print(" | Status: ");
+      Serial.println(success ? "OK" : "Falha");
+      
+      // Verificar se todas as mensagens foram enviadas
+      if (currentMessage >= totalMessages) {
+        Serial.println("\n--- TRANSMISSÃO CONCLUÍDA ---");
+        Serial.println("Pacote " + String(packetNumber) + " enviado com " + String(totalMessages) + " mensagens");
+        
+        // Perguntar se deseja enviar outro pacote
+        Serial.println("\nDeseja enviar outro pacote? (S/N)");
+        configReady = false;  // Aguardar nova configuração
+        
+        // Esperar resposta
+        while (!Serial.available()) {
+          // Aguardar entrada do usuário
+        }
+        
+        char response = Serial.read();
+        if (response == 'S' || response == 's') {
+          // Limpar buffer
+          while (Serial.available()) {
+            Serial.read();
+          }
+          getUserConfig();  // Obter nova configuração
+        } else {
+          Serial.println("Programa finalizado. Reinicie o Arduino para enviar novos pacotes.");
+          while (1) {
+            // Loop infinito para parar a execução
+            delay(1000);
+          }
         }
       }
-	}
-}}
-
+    }
+  } else if (Serial.available()) {
+    // Se houver dados disponíveis e não estiver configurado, iniciar nova configuração
+    Serial.read();  // Limpar buffer
+    getUserConfig();
+  }
+}
