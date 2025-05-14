@@ -15,6 +15,7 @@ struct DataPacket {
 int packetNumber = 0;
 int totalMessages = 0;
 int currentMessage = 0;
+float distancia = 0.0;  // Nova variável para armazenar a distância
 bool configReady = false;
 unsigned long previousMillis = 0;
 const unsigned long delayTime = 1;  // Delay de 1ms entre mensagens
@@ -64,84 +65,97 @@ void getUserConfig() {
   while (Serial.available()) {
     Serial.read();
   }
+
+  // Solicitar distância do receptor (nova entrada)
+  Serial.println("Digite a distância em metros do receptor:");
+  while (!Serial.available()) {
+    // Aguardar entrada do usuário
+  }
+  distancia = Serial.parseFloat();
+  Serial.print("Distância configurada: ");
+  Serial.println(distancia);
+  Serial.flush();
+  
+  // Limpar buffer
+  while (Serial.available()) {
+    Serial.read();
+  }
   
   currentMessage = 0;  // Resetar contador de mensagens
   configReady = true;  // Configuração concluída
   
   Serial.println("\n--- INICIANDO TRANSMISSÃO ---");
-  Serial.println("Pacote: " + String(packetNumber) + " | Total de mensagens: " + String(totalMessages));
+  Serial.println("Pacote: " + String(packetNumber) + 
+               " | Total de mensagens: " + String(totalMessages) +
+               " | Distância: " + String(distancia) + "m");
   previousMillis = millis();  // Inicializar timer
 }
 
 void loop() {
-  // Verifica se a configuração está pronta
   if (configReady) {
     unsigned long currentMillis = millis();
     
-    // Verifica se é hora de enviar uma nova mensagem
     if (currentMillis - previousMillis >= delayTime && currentMessage < totalMessages) {
       previousMillis = currentMillis;
       
-      // Preparar e enviar a mensagem
       currentMessage++;
       
       DataPacket dataPacket;
       dataPacket.packetNumber = packetNumber;
       dataPacket.messageNumber = currentMessage;
 
-      // Obter o tempo em microssegundos
       unsigned long micro = micros();
       
-      // Criar mensagem com o tempo em microssegundos incluído
-      String messageContent = String(micro) + "," + String(dataPacket.packetNumber) + "," + String(dataPacket.messageNumber);
+      // Adicionar distância na mensagem
+      String messageContent = String(micro) + "," + 
+                            String(dataPacket.packetNumber) + "," + 
+                            String(dataPacket.messageNumber) + "," +
+                            String(distancia);
       
       char message[50];
       messageContent.toCharArray(message, sizeof(message));
       bool success = radio.write(&message, sizeof(message));
       
-      // Exibir informações sobre a mensagem enviada
       Serial.print("Enviado - Pacote: ");
       Serial.print(dataPacket.packetNumber);
       Serial.print(" | Mensagem: ");
       Serial.print(dataPacket.messageNumber);
       Serial.print(" | Tempo: ");
       Serial.print(micro);
-      Serial.print(" | Status: ");
+      Serial.print(" | Distância: ");
+      Serial.print(distancia);
+      Serial.print("m | Status: ");
       Serial.println(success ? "OK" : "Falha");
       
-      // Verificar se todas as mensagens foram enviadas
       if (currentMessage >= totalMessages) {
         Serial.println("\n--- TRANSMISSÃO CONCLUÍDA ---");
-        Serial.println("Pacote " + String(packetNumber) + " enviado com " + String(totalMessages) + " mensagens");
+        Serial.println("Pacote " + String(packetNumber) + 
+                     " enviado com " + String(totalMessages) + 
+                     " mensagens a " + String(distancia) + "m");
         
-        // Perguntar se deseja enviar outro pacote
         Serial.println("\nDeseja enviar outro pacote? (S/N)");
-        configReady = false;  // Aguardar nova configuração
+        configReady = false;
         
-        // Esperar resposta
         while (!Serial.available()) {
           // Aguardar entrada do usuário
         }
         
         char response = Serial.read();
         if (response == 'S' || response == 's') {
-          // Limpar buffer
           while (Serial.available()) {
             Serial.read();
           }
-          getUserConfig();  // Obter nova configuração
+          getUserConfig();
         } else {
           Serial.println("Programa finalizado. Reinicie o Arduino para enviar novos pacotes.");
           while (1) {
-            // Loop infinito para parar a execução
             delay(1000);
           }
         }
       }
     }
   } else if (Serial.available()) {
-    // Se houver dados disponíveis e não estiver configurado, iniciar nova configuração
-    Serial.read();  // Limpar buffer
+    Serial.read();
     getUserConfig();
   }
 }
