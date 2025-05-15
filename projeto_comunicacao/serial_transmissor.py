@@ -2,7 +2,6 @@ import serial
 import time
 import datetime
 
-# Configuração da porta serial
 porta_serial = 'COM9'
 taxa_baud = 9600
 
