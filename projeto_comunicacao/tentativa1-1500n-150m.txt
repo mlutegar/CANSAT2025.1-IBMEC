@@ -1,0 +1,1 @@
+Tempo total receptor,Tempo total emissor,Id do pacote,Id da mensagem,Distancia (m),Tempo zerado receptor,Tempo zerado emissor,Delta tempo,Velocidade (m/s)

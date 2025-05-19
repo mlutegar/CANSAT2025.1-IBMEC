@@ -7,3 +7,7 @@ os testes que pensei seria:
 
 analisar payload
 analisar frequencia
+
+pegar sensor temperatura e umidade para adicionar a analise
+colocar potencia do sinsaç
+trazer pilha para testar a potencia do sinal

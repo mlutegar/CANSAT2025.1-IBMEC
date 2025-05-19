@@ -53,7 +53,7 @@ def enviar_configuracao_arduino():
 
 
 def monitorar_arduino(arduino):
-    with open('dados_arduino.txt', 'a') as file:
+    with open('teste1-50m.txt', 'a') as file:
         print("Monitoramento iniciado. Pressione Ctrl+C para sair.")
         try:
             while True:

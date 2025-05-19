@@ -2,7 +2,6 @@ import serial
 import time
 import datetime
 import pandas as pd
-import numpy as np
 
 arduino = serial.Serial('COM12', 9600, timeout=1)
 time.sleep(2)
@@ -17,7 +16,10 @@ header = ("Tempo total receptor,"
           "Delta tempo,"
           "Velocidade (m/s)")
 
-with open('dados_arduino.txt', 'a') as file:
+mensagens = 1500
+distancia_input = 150
+
+with open(f'tentativa1-{mensagens}n-{distancia_input}m.txt', 'a') as file:
     # Escreve o cabeçalho no arquivo
     file.write(header + '\n')
 
@@ -45,7 +47,7 @@ with open('dados_arduino.txt', 'a') as file:
                         tempo_emissor = int(dados[0])
                         id_pacote = int(dados[1])
                         id_mensagem = int(dados[2])
-                        distancia = float(dados[3]) if len(dados) > 3 else 0
+                        distancia = distancia_input
 
                         # Inicializa os valores de referência na primeira medição
                         if primeiro_tempo_receptor is None:
@@ -93,7 +95,7 @@ with open('dados_arduino.txt', 'a') as file:
         # Analisa os dados coletados após encerrar a coleta
         try:
             print("\nAnalisando os dados coletados...")
-            df = pd.read_csv('dados_arduino.txt')
+            df = pd.read_csv('teste1-50m.txt')
 
             # Estatísticas básicas
             print("\nEstatísticas do tempo de transmissão:")
