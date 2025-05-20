@@ -1,17 +1,11 @@
-#include <SPI.h>
-#include <nRF24L01.h>
-#include <RF24.h>
+#include <SoftwareSerial.h>
+SoftwareSerial lora(2,3); 
 
-RF24 radio(9, 8);  // CE, CSN
-const byte address[6] = "00001";  // Endereço do canal de comunicação
-
-// Estrutura da mensagem
 struct DataPacket {
   int packetNumber;
   int messageNumber;
 };
 
-// Variáveis para controlar o programa
 int packetNumber = 0;
 int totalMessages = 0;
 int currentMessage = 0;
@@ -19,19 +13,6 @@ float distancia = 0.0;  // Nova variável para armazenar a distância
 bool configReady = false;
 unsigned long previousMillis = 0;
 const unsigned long delayTime = 1;  // Delay de 1ms entre mensagens
-
-void setup() {
-  Serial.begin(9600);
-  radio.begin();
-  radio.openWritingPipe(address);
-  radio.setPALevel(RF24_PA_MIN);
-  radio.stopListening();
-  
-  Serial.println("Transmissor nRF24L01 iniciado!");
-  Serial.println("Aguardando configuração...");
-  
-  getUserConfig();  // Obter configuração inicial do usuário
-}
 
 void getUserConfig() {
   Serial.println("\n--- CONFIGURAÇÃO DO PACOTE ---");
@@ -91,6 +72,13 @@ void getUserConfig() {
   previousMillis = millis();  // Inicializar timer
 }
 
+void setup() {
+  Serial.begin(9600);
+  lora.begin(9600);
+  getUserConfig();
+  lora.print("CFG;");
+}
+
 void loop() {
   if (configReady) {
     unsigned long currentMillis = millis();
@@ -113,8 +101,8 @@ void loop() {
                             String(distancia);
       
       char message[50];
-      messageContent.toCharArray(message, sizeof(message));
-      bool success = radio.write(&message, sizeof(message));
+      lora.println(messageContent);
+  bool success = true; // assume OK (UART não devolve ack)
       
       Serial.print("Enviado - Pacote: ");
       Serial.print(dataPacket.packetNumber);
