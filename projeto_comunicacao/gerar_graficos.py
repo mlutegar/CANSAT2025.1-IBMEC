@@ -1,35 +1,26 @@
+import glob
+import os
+
 import pandas as pd
 import matplotlib
 matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
-from io import StringIO
+import seaborn as sns # Importe seaborn para gráficos mais avançados
+from mpl_toolkits.mplot3d import Axes3D
 
-df = pd.read_csv("data/tentativa1-1500n-12m.csv", sep=",", header=0)
+caminho = "data/"
+arquivos_csv = glob.glob(os.path.join(caminho, "*.csv"))
+print(f"Arquivos encontrados: {arquivos_csv}")
 
-# Exibir os dados carregados
-print(df)
-print(df.columns.tolist())
+lista_dfs = []
 
-# Gráfico 1: Distância vs Delta tempo
-plt.figure()
-plt.scatter(df['Distancia (m)'], df['Delta tempo'])
-plt.xlabel('Distancia (m)')
-plt.ylabel('Delta tempo')
-plt.title('Distancia vs Delta tempo')
-plt.show()
+for arquivo in arquivos_csv:
+    df_temp = pd.read_csv(arquivo, sep=",", header=0)
+    lista_dfs.append(df_temp)
 
-# Gráfico 2: Id da mensagem vs Velocidade
-plt.figure()
-plt.plot(df['Id da mensagem'], df['Velocidade (m/s)'], marker='o')
-plt.xlabel('Id da mensagem')
-plt.ylabel('Velocidade (m/s)')
-plt.title('Velocidade por Pacote')
-plt.show()
+df = pd.concat(lista_dfs, ignore_index=True)
 
-# Gráfico 3: Id da mensagem vs Tempo total receptor
-plt.figure()
-plt.plot(df['Id da mensagem'], df['Tempo total receptor'])
-plt.xlabel('Id da mensagem')
-plt.ylabel('Tempo total receptor')
-plt.title('Tempo receptor por Pacote')
+# Pair Plot (Gráfico de Pares) para Variáveis Numéricas
+sns.pairplot(df[['Velocidade (m/s)', 'Distancia (m)', 'Delta tempo', 'Tempo total emissor', 'Tempo total receptor']])
+plt.suptitle('Gráfico de Pares das Variáveis Numéricas', y=1.02)
 plt.show()
