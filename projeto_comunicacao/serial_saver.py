@@ -19,7 +19,7 @@ header = ("Tempo total receptor,"
 mensagens = 1500
 distancia_input = 150
 
-with open(f'data/tentativa1-{mensagens}n-{distancia_input}m.csv', 'a') as file:
+with open(f'tentativa1-{mensagens}n-{distancia_input}m.csv', 'a') as file:
     # Escreve o cabeçalho no arquivo
     file.write(header + '\n')
 
