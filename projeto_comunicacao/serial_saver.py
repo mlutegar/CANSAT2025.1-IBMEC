@@ -3,7 +3,7 @@ import time
 import datetime
 import pandas as pd
 
-arduino = serial.Serial('COM12', 9600, timeout=1)
+arduino = serial.Serial('COM6', 9600, timeout=1)
 time.sleep(2)
 
 header = ("Tempo total receptor,"
@@ -16,8 +16,8 @@ header = ("Tempo total receptor,"
           "Delta tempo,"
           "Velocidade (m/s)")
 
-mensagens = 1500
-distancia_input = 150
+mensagens = 100
+distancia_input = 1
 
 with open(f'tentativa1-{mensagens}n-{distancia_input}m.csv', 'a') as file:
     # Escreve o cabeçalho no arquivo
