@@ -2,7 +2,7 @@
 
 ## Links
 [Overleaf](https://www.overleaf.com/project/67d35431212153aa53f4d6de)
-
+[Apresentação AP2](https://www.canva.com/design/DAGqhZk9VP4/F6xNFaBpqeg8qPPRLxJIvQ/edit?utm_content=DAGqhZk9VP4&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton)
 ## Descrição do Projeto
 Este projeto consiste na implementação de um sistema de comunicação sem fio utilizando a tecnologia LORA (Long Range), desenvolvido para a disciplina de Projeto de Sistema Embarcado. O objetivo principal é estabelecer uma comunicação eficiente entre um transmissor e um receptor, possibilitando a troca de dados a longa distância com baixo consumo de energia.
 
